@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.DS_Store
+*.env
+*.tmp
+*.pkl
+
+saved_models/
+logs/
