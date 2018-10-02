@@ -60,7 +60,7 @@ class DataLoader(object):
             if len(bg_tokens) == 0:
                 bg_tokens = [constant.UNK_TOKEN] # use unk as a dummy background
             if opt.get('concat_background', False):
-                src_tokens = bg_tokens + src_tokens
+                src_tokens = bg_tokens + [constant.SEP_TOKEN] + src_tokens
             src_tokens = [constant.SOS_TOKEN] + src_tokens + [constant.EOS_TOKEN]
             tgt_in = [constant.SOS_TOKEN] + tgt_tokens # target fed in RNN
             tgt_out = tgt_tokens + [constant.EOS_TOKEN] # target from RNN output

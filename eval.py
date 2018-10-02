@@ -41,15 +41,8 @@ elif args.cuda:
 # load opt
 model_file = args.model_dir + '/' + args.model
 print("Loading model from {}".format(model_file))
-opt = torch_utils.load_config(model_file)
-
-# load vocab
-vocab_file = args.model_dir + '/vocab.pkl'
-vocab = Vocab(vocab_file, load=True)
-assert opt['vocab_size'] == vocab.size, "Vocab size must match that in the saved model."
-
-trainer = Trainer(opt, vocab)
-trainer.load(model_file)
+trainer = Trainer(model_file=model_file)
+opt, vocab = trainer.opt, trainer.vocab
 
 # load data
 data_dir = args.data_dir if len(args.data_dir) > 0 else opt['data_dir']
@@ -72,10 +65,14 @@ if args.use_bleu:
 else:
     r1, r2, rl, r1_cf, r2_cf, rl_cf = rouge.get_rouge(predictions, test_gold, use_cf=True)
     #print("{} set ROUGE-1: {:.2f}, ROUGE-2: {:.2f}, ROUGE-L: {:.2f}".format(args.dataset, r1, r2, rl))
-    print("{} set Results:".format(args.dataset))
-    print("ROUGE-1\tROUGE-2\tROUGE-L\tR1-CF\tR2-CF\tRL-CF")
-    print("{:.2f}\t{:.2f}\t{:.2f}\t({:.2f},{:.2f})\t({:.2f},{:.2f})\t({:.2f},{:.2f})".format(r1, r2, rl,
-        r1_cf[0]-r1, r1_cf[1]-r1, r2_cf[0]-r2, r2_cf[1]-r2, rl_cf[0]-rl, rl_cf[1]-rl))
+    print("{} set results:\n".format(args.dataset))
+    #print("ROUGE-1\tROUGE-2\tROUGE-L\tR1-CF\tR2-CF\tRL-CF")
+    #print("{:.2f}\t{:.2f}\t{:.2f}\t({:.2f},{:.2f})\t({:.2f},{:.2f})\t({:.2f},{:.2f})".format(r1, r2, rl,
+    #    r1_cf[0]-r1, r1_cf[1]-r1, r2_cf[0]-r2, r2_cf[1]-r2, rl_cf[0]-rl, rl_cf[1]-rl))
+    print("Metric\tScore\t95% CI")
+    print("ROUGE-1\t{:.2f}\t({:.2f},{:.2f})".format(r1, r1_cf[0]-r1, r1_cf[1]-r1))
+    print("ROUGE-2\t{:.2f}\t({:.2f},{:.2f})".format(r2, r2_cf[0]-r2, r2_cf[1]-r2))
+    print("ROUGE-L\t{:.2f}\t({:.2f},{:.2f})".format(rl, rl_cf[0]-rl, rl_cf[1]-rl))
 
 if len(args.out) > 0:
     text_utils.save_predictions(predictions, args.out)

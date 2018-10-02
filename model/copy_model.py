@@ -238,7 +238,7 @@ class Seq2SeqWithCopyModel(nn.Module):
         enc_inputs = self.embedding(src)
         batch_size = enc_inputs.size(0)
         src_mask = src.data.eq(constant.PAD_ID)
-        src_lens = list(src_mask.eq(0).long().sum(1).squeeze())
+        src_lens = list(src_mask.eq(0).long().sum(1))
        
         # (1) encode context
         h_in, enc_hidden = self.encode(enc_inputs, src_lens, encoder=self.encoder)

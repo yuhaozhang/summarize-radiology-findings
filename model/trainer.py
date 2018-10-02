@@ -26,18 +26,23 @@ def unpack_batch(batch, opt):
 
 class Trainer(object):
     """ A trainer for training models. """
-    def __init__(self, opt, vocab, emb_matrix=None):
-        self.opt = opt
-        # use pointer-generator
-        self.model = Seq2SeqWithCopyModel(opt, emb_matrix=emb_matrix)
+    def __init__(self, opt=None, vocab=None, emb_matrix=None, model_file=None):
+        if model_file is not None:
+            # load model, config and vocab directly from file
+            self.load(model_file)
+        else:
+            # otherwise build model from scratch
+            self.opt = opt
+            # use pointer-generator
+            self.model = Seq2SeqWithCopyModel(opt, emb_matrix=emb_matrix)
+            self.vocab = vocab
         # by default use 0 weight for coverage loss
-        self.crit = CoverageSequenceLoss(vocab.size, opt.get('cov_alpha', 0))
+        self.crit = CoverageSequenceLoss(self.vocab.size, self.opt.get('cov_alpha', 0))
         self.parameters = [p for p in self.model.parameters() if p.requires_grad]
-        if opt['cuda']:
+        if self.opt['cuda']:
             self.model.cuda()
             self.crit.cuda()
-        self.optimizer = torch_utils.get_optimizer(opt['optim'], self.parameters, opt['lr'])
-        self.vocab = vocab
+        self.optimizer = torch_utils.get_optimizer(self.opt['optim'], self.parameters, self.opt['lr'])
 
     def step(self, batch, eval=False):
         inputs, src_tokens, tgt_tokens, orig_idx = unpack_batch(batch, self.opt)
@@ -80,6 +85,7 @@ class Trainer(object):
         params = {
                 'model': self.model.state_dict(),
                 'config': self.opt,
+                'vocab': self.vocab
                 }
         try:
             torch.save(params, filename)
@@ -93,6 +99,8 @@ class Trainer(object):
         except BaseException:
             print("Cannot load model from {}".format(filename))
             exit()
-        self.model.load_state_dict(checkpoint['model'])
         self.opt = checkpoint['config']
+        self.model = Seq2SeqWithCopyModel(self.opt)
+        self.model.load_state_dict(checkpoint['model'])
+        self.vocab = checkpoint['vocab']
 

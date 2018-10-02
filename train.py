@@ -106,7 +106,7 @@ dev_gold = dev_batch.save_gold(model_save_dir + '/pred_dev_gold.txt')
 # print model info
 helper.print_config(opt)
 
-trainer = Trainer(opt, vocab, emb_matrix)
+trainer = Trainer(opt=opt, vocab=vocab, emb_matrix=emb_matrix)
 if opt['cov_loss_epoch'] > 1: # delay coverage loss
     trainer.crit.update_alpha(0)
 
