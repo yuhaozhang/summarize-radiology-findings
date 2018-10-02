@@ -26,7 +26,6 @@ class CoverageSequenceLoss(nn.Module):
         weight[constant.PAD_ID] = 0
         self.nll = nn.NLLLoss(weight)
         self.alpha = alpha
-        print("[Using CoverageSequenceLoss with coverage weight of {}]".format(alpha))
 
     def forward(self, inputs, targets, attn, cov):
         assert inputs.size(0) == targets.size(0)

@@ -41,7 +41,7 @@ class Seq2SeqWithCopyModel(nn.Module):
         self.drop = nn.Dropout(self.dropout)
         self.embedding = nn.Embedding(self.vocab_size, self.emb_dim, self.pad_token)
         self.encoder = nn.LSTM(self.emb_dim, self.enc_hidden_dim, self.nlayers, \
-                bidirectional=True, batch_first=True, dropout=self.dropout)
+                bidirectional=True, batch_first=True, dropout=self.dropout if self.nlayers > 1 else 0) # avoid warning
 
         dec_input_dim = self.emb_dim
         dec_input_dim += self.hidden_dim if self.use_bg else 0
@@ -54,10 +54,9 @@ class Seq2SeqWithCopyModel(nn.Module):
 
         if self.use_bg:
             self.bg_encoder = nn.LSTM(self.emb_dim, self.enc_hidden_dim, 1, \
-                    bidirectional=True, batch_first=True, dropout=self.dropout)
+                    bidirectional=True, batch_first=True, dropout=0) # when nlayer=1, rnn dropout does not apply
             self.bg_drop = nn.Dropout(self.dropout)
             if self.attn_bg:
-                print("[Use attentional background encoder.]")
                 self.bg_attn_layer = BasicAttention(self.hidden_dim)
 
         self.SOS_tensor = torch.LongTensor([constant.SOS_ID])
