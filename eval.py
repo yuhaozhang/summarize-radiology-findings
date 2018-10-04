@@ -64,11 +64,7 @@ if args.use_bleu:
     print("{} set bleu score: {:.2f}".format(args.dataset, test_bleu))
 else:
     r1, r2, rl, r1_cf, r2_cf, rl_cf = rouge.get_rouge(predictions, test_gold, use_cf=True)
-    #print("{} set ROUGE-1: {:.2f}, ROUGE-2: {:.2f}, ROUGE-L: {:.2f}".format(args.dataset, r1, r2, rl))
     print("{} set results:\n".format(args.dataset))
-    #print("ROUGE-1\tROUGE-2\tROUGE-L\tR1-CF\tR2-CF\tRL-CF")
-    #print("{:.2f}\t{:.2f}\t{:.2f}\t({:.2f},{:.2f})\t({:.2f},{:.2f})\t({:.2f},{:.2f})".format(r1, r2, rl,
-    #    r1_cf[0]-r1, r1_cf[1]-r1, r2_cf[0]-r2, r2_cf[1]-r2, rl_cf[0]-rl, rl_cf[1]-rl))
     print("Metric\tScore\t95% CI")
     print("ROUGE-1\t{:.2f}\t({:.2f},{:.2f})".format(r1, r1_cf[0]-r1, r1_cf[1]-r1))
     print("ROUGE-2\t{:.2f}\t({:.2f},{:.2f})".format(r2, r2_cf[0]-r2, r2_cf[1]-r2))
