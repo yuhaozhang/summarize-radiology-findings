@@ -1,7 +1,7 @@
 Learning to Summarize Radiology Findings
 ==========
 
-This repo contains the PyTorch code for the paper [Learning to Summarize Radiology Findings](https://nlp.stanford.edu/pubs/zhang2018radsum.pdf).
+This repo contains the PyTorch code and pretrained model for the paper [Learning to Summarize Radiology Findings](https://nlp.stanford.edu/pubs/zhang2018radsum.pdf).
 
 ## Requirements
 
