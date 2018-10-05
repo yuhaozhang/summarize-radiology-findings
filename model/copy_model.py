@@ -31,7 +31,6 @@ class Seq2SeqWithCopyModel(nn.Module):
         self.opt = opt
         self.emb_matrix = emb_matrix
         self.use_bg = opt.get('background', False)
-        self.attn_bg = opt.get('attn_background', False)
         
         print("Building Seq2Seq with Copy model ...")
         self.enc_hidden_dim = self.hidden_dim // 2
@@ -56,8 +55,7 @@ class Seq2SeqWithCopyModel(nn.Module):
             self.bg_encoder = nn.LSTM(self.emb_dim, self.enc_hidden_dim, 1, \
                     bidirectional=True, batch_first=True, dropout=0) # when nlayer=1, rnn dropout does not apply
             self.bg_drop = nn.Dropout(self.dropout)
-            if self.attn_bg:
-                self.bg_attn_layer = BasicAttention(self.hidden_dim)
+            self.bg_attn_layer = BasicAttention(self.hidden_dim)
 
         self.SOS_tensor = torch.LongTensor([constant.SOS_ID])
         self.SOS_tensor = self.SOS_tensor.cuda() if self.use_cuda else self.SOS_tensor
@@ -205,9 +203,8 @@ class Seq2SeqWithCopyModel(nn.Module):
             bg_lens = bg_mask.eq(0).long().sum(1)
             bg_out, bg_hidden = self.encode(bg_inputs, bg_lens, encoder=self.bg_encoder, sort=True)
             bg_h = bg_hidden[0]
-            if self.attn_bg:
-                # use attentional representation
-                _, bg_h, _ = self.bg_attn_layer(enc_hidden[0], bg_out, mask=bg_mask)
+            # use attentional representation
+            _, bg_h, _ = self.bg_attn_layer(enc_hidden[0], bg_out, mask=bg_mask)
             bg_h = self.bg_drop(bg_h)
         else:
             bg_h = None
@@ -249,9 +246,8 @@ class Seq2SeqWithCopyModel(nn.Module):
             bg_lens = bg_mask.eq(0).long().sum(1)
             bg_out, bg_hidden = self.encode(bg_inputs, bg_lens, encoder=self.bg_encoder, sort=True)
             bg_h = bg_hidden[0]
-            if self.attn_bg:
-                # use attentional representation
-                _, bg_h, _ = self.bg_attn_layer(enc_hidden[0], bg_out, mask=bg_mask)
+            # use attentional representation
+            _, bg_h, _ = self.bg_attn_layer(enc_hidden[0], bg_out, mask=bg_mask)
             bg_h = self.bg_drop(bg_h)
         else:
             bg_h = None

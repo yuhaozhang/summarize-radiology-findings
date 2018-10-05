@@ -22,7 +22,7 @@ parser.add_argument('--model', default='best_model.pt', help='Name of the model 
 parser.add_argument('--dataset', default='test', help="Data split to use for evaluation: dev or test.")
 parser.add_argument('--batch_size', type=int, default=100, help="Batch size for evaluation.")
 parser.add_argument('--gold', default='', help="Optional: a file where to write gold summarizations. Default to not write.")
-parser.add_argument('--out', default='', help="Optional: a file where to write predictions.i Default to not write.")
+parser.add_argument('--out', default='', help="Optional: a file where to write predictions. Default to not write.")
 parser.add_argument('--use_bleu', action='store_true', help="Use BLEU instead of ROUGE metrics for scoring.")
 
 parser.add_argument('--seed', type=int, default=1234)

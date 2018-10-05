@@ -41,7 +41,6 @@ parser.add_argument('--cov_alpha', type=float, default=0, help='Weight alpha for
 parser.add_argument('--cov_loss_epoch', type=int, default=0, help='Add coverage loss starting from this epoch.')
 
 parser.add_argument('--background', action='store_true', help='Use background information for decoder.')
-parser.add_argument('--attn_background', action='store_true', help='Use attentional background encoder.')
 parser.add_argument('--concat_background', action='store_true', help='Simply concat background to findings.')
 
 parser.add_argument('--use_bleu', action='store_true', help='Use BLEU as the metric. By default use ROUGE.')
