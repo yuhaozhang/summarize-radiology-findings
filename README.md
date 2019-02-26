@@ -49,7 +49,7 @@ This will write vocabulary and word vectors as a numpy matrix into the dir `data
 
 To start training on your own data, run
 ```
-python train.py --id $ID --data_dir dataset/$REPORT --background --attn_background
+python train.py --id $ID --data_dir dataset/$REPORT --background
 ```
 
 This will train a summarization model with copy mechanism and background encoder and save everything into the `saved_models/$ID` directory. For other parameters please refer to `train.py`.
